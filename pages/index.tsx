@@ -1,17 +1,22 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import Layout from "../components/Layout";
 import supabaseClient from "../utils/supabase";
 
 
 const Home: NextPage = (props:any) => {
  
-  console.log(props)
+  if(!props.lessons && props.lessons.length === 0 ) return <p> Loading ...</p>
   return (
     <Layout>
     {
-      props.lessons.map((lesson:any) => {
+      props.lessons.map((lesson:any, index: string) => {
         return(
-          <p key={lesson.id}> {lesson.title} </p>
+          <div key={lesson.id} className="m-8 border p-4 rounded-md shadow-sm">
+             <Link href={`/${lesson.id}`}> 
+          <a> {lesson.title} </a> 
+          </Link>
+          </div>
          
         )
       })
@@ -26,7 +31,7 @@ export const getStaticProps = async () => {
   // query all the data from the lesson table
   const {data} = await supabaseClient.from('Lesson').select('*')
 
-  console.log(data)
+  // console.log(data)
   return {
     props: {
       lessons: data
